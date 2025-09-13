@@ -1,6 +1,7 @@
 #pragma once
 #include <string>
 #include "Position.h"
+#include "PlayerData.h"
 
 enum MazeTile
 {
@@ -36,3 +37,7 @@ int PrintAvailableMoves(Position& position);
 bool IsWall(int X, int Y);
 bool IsEnd(Position& position);
 MoveDirection GetMoveInput(int MoveFlags);
+
+void MoveEventProcess(PlayerData& Player);
+void BattleEvent(PlayerData& Player);
+void HealerEvent(PlayerData& Player);

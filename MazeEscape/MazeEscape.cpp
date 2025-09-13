@@ -4,6 +4,7 @@
 #include <fstream>
 #include "MazeEscape.h"
 #include "PlayerData.h"
+#include "EnemyData.h"
 
 int main()
 {
@@ -34,7 +35,7 @@ void MazeEscapeRun()
 
 	printf("~~ Maze Escape ~~\n");
 
-	while (true)
+	while (Player.Health > 0)
 	{
 		PrintMaze(Player.CurrentPosition);
 
@@ -65,6 +66,8 @@ void MazeEscapeRun()
 			// Critical Error
 			break;
 		}
+
+		MoveEventProcess(Player);
 	}
 }
 
@@ -334,4 +337,81 @@ MoveDirection GetMoveInput(int MoveFlags)
 	}
 
 	return Direction;
+}
+
+void MoveEventProcess(PlayerData& Player)
+{
+	float RandomValue = static_cast<float>(rand()) / static_cast<float>(RAND_MAX);
+	printf("Random Value = %.2f\n", RandomValue);
+	if (RandomValue < 0.2f)
+	{
+		printf("An enemy appeared! You fought bravely and defeated it!\n");
+		BattleEvent(Player);
+	}
+	else if (RandomValue < 0.4f)
+	{
+		printf("You found a Healer!\n");
+		HealerEvent(Player);
+	}
+	else
+	{
+		printf("Nothing happened.\n");
+	}
+}
+
+void BattleEvent(PlayerData& Player)
+{
+    EnemyData Enemy;
+    printf("Battle Start!\n");
+    while (Player.Health > 0 && Enemy.Health > 0)
+    {
+        // Player attacks Enemy
+        Enemy.Health -= Player.AttackPower;
+        printf("Player attacks! Enemy Health: %.1f\n", Enemy.Health);
+        if (Enemy.Health <= 0)
+        {
+            printf("Enemy defeated!\n");
+			printf("You gained %d gold.\n", Enemy.DropGold);
+			Player.Gold += Enemy.DropGold;
+            break;
+        }
+
+        // Enemy attacks Player
+        Player.Health -= Enemy.AttackPower;
+        printf("Enemy attacks! Player Health: %.1f\n", Player.Health);
+        if (Player.Health <= 0)
+        {
+            printf("Player defeated!\n");
+        }
+    }
+}
+
+void HealerEvent(PlayerData& Player)
+{
+    printf("Healer: How much gold will you pay for healing?\n(Current Health: %.1f, Current Gold: %d)\n", Player.Health, Player.Gold);
+    int payGold = -1;
+	while (payGold < 0 || payGold > Player.Gold)
+    {
+        printf("Enter gold to pay: ");
+        std::cin >> payGold;
+        if (payGold <= 0)
+        {
+            printf("Don’t you want a heal? OK.\n");
+        }
+        if (payGold > Player.Gold)
+        {
+            printf("You don't have enough gold.\n");
+        }
+    }
+	if (payGold > 0)
+	{
+		float healAmount = static_cast<float>(payGold);
+		float newHealth = Player.Health + healAmount;
+		if (newHealth > Player.MaxHealth)
+			newHealth = Player.MaxHealth;
+		Player.Health = newHealth;
+		Player.Gold -= payGold;
+		printf("Healed!");
+	}
+	printf("Current Health: %.1f, Remaining Gold: %d\n", Player.Health, Player.Gold);
 }

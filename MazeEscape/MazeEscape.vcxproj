@@ -126,6 +126,7 @@
     <ClCompile Include="MazeEscape.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="EnemyData.h" />
     <ClInclude Include="MazeEscape.h" />
     <ClInclude Include="PlayerData.h" />
     <ClInclude Include="Position.h" />
