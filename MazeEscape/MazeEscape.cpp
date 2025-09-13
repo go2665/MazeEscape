@@ -3,6 +3,7 @@
 #include <iostream>
 #include <fstream>
 #include "MazeEscape.h"
+#include "PlayerData.h"
 
 int main()
 {
@@ -18,7 +19,6 @@ int MazeWidth = 20;
 int MazeHeight = 10;
 int** Maze = nullptr;
 
-
 void InitializeMaze()
 {
 	std::string Data;
@@ -28,37 +28,37 @@ void InitializeMaze()
 
 void MazeEscapeRun()
 {
-	int PlayerX = 0;
-	int PlayerY = 0;
-	FindStartPosition(PlayerX, PlayerY);
+	PlayerData Player;
+
+	FindStartPosition(Player.CurrentPosition);
 
 	printf("~~ Maze Escape ~~\n");
 
 	while (true)
 	{
-		PrintMaze(PlayerX, PlayerY);
+		PrintMaze(Player.CurrentPosition);
 
-		if (IsEnd(PlayerX, PlayerY))
+		if (IsEnd(Player.CurrentPosition))
 		{
 			printf("Congratulations! You have escaped the maze!\n");
 			break;
 		}
 
-		int MoveFlags = PrintAvailableMoves(PlayerX, PlayerY);
+		int MoveFlags = PrintAvailableMoves(Player.CurrentPosition);
 		MoveDirection Direction = GetMoveInput(MoveFlags);
 		switch (Direction)
 		{
 		case DirUp:
-			PlayerY--;
+			Player.CurrentPosition.y--;
 			break;
 		case DirDown:
-			PlayerY++;
+			Player.CurrentPosition.y++;
 			break;
 		case DirLeft:
-			PlayerX--;
+			Player.CurrentPosition.x--;
 			break;
 		case DirRight:
-			PlayerX++;
+			Player.CurrentPosition.x++;
 			break;
 		case DirNone:
 		default:
@@ -197,13 +197,13 @@ void ParseLineData(const char* LineData, int ArraySize, int* OutArray)
 	}
 }
 
-void PrintMaze(int PlayerX, int PlayerY)
+void PrintMaze(Position& position)
 {
 	for (int y = 0; y < MazeHeight; y++)
 	{
 		for (int x = 0; x < MazeWidth; x++)
 		{
-			if (PlayerX == x && PlayerY == y)
+			if (position.x == x && position.y == y)
 			{
 				printf("P ");
 			}
@@ -232,7 +232,7 @@ void PrintMaze(int PlayerX, int PlayerY)
 	}
 }
 
-void FindStartPosition(int& OutStartX, int& OutStartY)
+void FindStartPosition(Position& OutPosition)
 {
 	for (int y = 0; y < MazeHeight; y++)
 	{
@@ -240,37 +240,37 @@ void FindStartPosition(int& OutStartX, int& OutStartY)
 		{
 			if (Maze[y][x] == Start)
 			{
-				OutStartX = x;
-				OutStartY = y;
+				OutPosition.x = x;
+				OutPosition.y = y;
 				return;
 			}
 		}
 	}
-	OutStartX = 0;
-	OutStartY = 0;
+	OutPosition.x = 0;
+	OutPosition.y = 0;
 }
 
-int PrintAvailableMoves(int PlayerX, int PlayerY)
+int PrintAvailableMoves(Position& position)
 {
 	int MoveFlags = DirNone;
 
 	printf("Select movable direction (w:Up a:Left s:Down d:Right):\n");
-	if (!IsWall(PlayerX, PlayerY - 1))
+	if (!IsWall(position.x, position.y - 1))
 	{
 		printf("W(↑) ");
 		MoveFlags |= DirUp;
 	}
-	if (!IsWall(PlayerX, PlayerY + 1))
+	if (!IsWall(position.x, position.y + 1))
 	{
 		printf("S(↓) ");
 		MoveFlags |= DirDown;
 	}
-	if (!IsWall(PlayerX - 1, PlayerY))
+	if (!IsWall(position.x - 1, position.y))
 	{
 		printf("A(←) ");
 		MoveFlags |= DirLeft;
 	}
-	if (!IsWall(PlayerX + 1, PlayerY))
+	if (!IsWall(position.x + 1, position.y))
 	{
 		printf("D(→) ");
 		MoveFlags |= DirRight;
@@ -290,9 +290,9 @@ bool IsWall(int X, int Y)
 	return isWall;
 }
 
-bool IsEnd(int X, int Y)
+bool IsEnd(Position& position)
 {
-	return Maze[Y][X] == End;
+	return Maze[position.y][position.x] == End;
 }
 
 MoveDirection GetMoveInput(int MoveFlags)

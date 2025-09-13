@@ -1,5 +1,6 @@
 #pragma once
 #include <string>
+#include "Position.h"
 
 enum MazeTile
 {
@@ -29,9 +30,9 @@ int FindCharIndex(const char* TargetString, const char TargetCharacter);
 char* GetLine(char** InOutSource);
 void ParseLineData(const char* LineData, int ArraySize, int* OutArray);
 
-void PrintMaze(int PlayerX, int PlayerY);
-void FindStartPosition(int& OutStartX, int& OutStartY);
-int PrintAvailableMoves(int PlayerX, int PlayerY);
+void PrintMaze(Position& position);
+void FindStartPosition(Position& OutPosition);
+int PrintAvailableMoves(Position& position);
 bool IsWall(int X, int Y);
-bool IsEnd(int X, int Y);
+bool IsEnd(Position& position);
 MoveDirection GetMoveInput(int MoveFlags);

@@ -23,5 +23,11 @@
     <ClInclude Include="MazeEscape.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
+    <ClInclude Include="Position.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="PlayerData.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>
