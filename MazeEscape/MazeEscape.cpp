@@ -8,9 +8,9 @@
 
 int main()
 {
-    InitializeMaze();
-    MazeEscapeRun();
-    ClearMaze();
+    InitializeMaze();	// 미로 초기화(파일에서 불러오기)
+    MazeEscapeRun();	// 게임 시작
+    ClearMaze();		// 미로 초기화하면서 동적할당 했던 메모리 정리
 
     return 0;
 }
@@ -68,6 +68,15 @@ void MazeEscapeRun()
 		}
 
 		MoveEventProcess(Player);
+	}
+
+	if (Player.Health >= 0)
+	{
+		// 게임 클리어!
+	}
+	else
+	{
+		// 게임 오버
 	}
 }
 
@@ -341,8 +350,8 @@ MoveDirection GetMoveInput(int MoveFlags)
 
 void MoveEventProcess(PlayerData& Player)
 {
-	float RandomValue = static_cast<float>(rand()) / static_cast<float>(RAND_MAX);
-	printf("Random Value = %.2f\n", RandomValue);
+	float RandomValue = static_cast<float>(rand()) / static_cast<float>(RAND_MAX); // 0.0f ~ 1.0f
+	//printf("Random Value = %.2f\n", RandomValue);
 	if (RandomValue < 0.2f)
 	{
 		printf("An enemy appeared! You fought bravely and defeated it!\n");
