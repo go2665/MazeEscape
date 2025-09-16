@@ -1,16 +1,25 @@
 ﻿#define _CRT_SECURE_NO_WARNINGS
+#define TEST_MODE
 
 #include <iostream>
 #include <fstream>
 #include "MazeEscape.h"
 #include "PlayerData.h"
 #include "EnemyData.h"
+#include "Test.h"
 
 int main()
 {
-    InitializeMaze();	// 미로 초기화(파일에서 불러오기)
-    MazeEscapeRun();	// 게임 시작
-    ClearMaze();		// 미로 초기화하면서 동적할당 했던 메모리 정리
+#ifdef TEST_MODE
+	Test test;
+	test.TestBattle();
+#endif // TEST_MODE
+
+#ifndef TEST_MODE
+	InitializeMaze();	// 미로 초기화(파일에서 불러오기)
+	MazeEscapeRun();	// 게임 시작
+	ClearMaze();		// 미로 초기화하면서 동적할당 했던 메모리 정리
+#endif // !TEST_MODE    
 
     return 0;
 }
@@ -374,7 +383,7 @@ void BattleEvent(PlayerData& Player)
     printf("Battle Start!\n");
     while (Player.Health > 0 && Enemy.Health > 0)
     {
-        // Player attacks Enemy
+        // APlayer attacks Enemy
         Enemy.Health -= Player.AttackPower;
         printf("Player attacks! Enemy Health: %.1f\n", Enemy.Health);
         if (Enemy.Health <= 0)
@@ -385,7 +394,7 @@ void BattleEvent(PlayerData& Player)
             break;
         }
 
-        // Enemy attacks Player
+        // Enemy attacks APlayer
         Player.Health -= Enemy.AttackPower;
         printf("Enemy attacks! Player Health: %.1f\n", Player.Health);
         if (Player.Health <= 0)
